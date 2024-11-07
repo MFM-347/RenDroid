@@ -1,5 +1,6 @@
 package dev.mfm.renamer;
 
+import com.google.android.material.color.DynamicColors;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -7,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
@@ -16,22 +18,23 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.documentfile.provider.DocumentFile;
 import dev.mfm.renamer.databinding.ActivityMainBinding;
-import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
   private ActivityMainBinding binding;
   private static final int REQUEST_CODE_PERMISSION = 100;
+  private Uri selectedDirectoryUri;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    DynamicColors.applyToActivityIfAvailable(this);
     super.onCreate(savedInstanceState);
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
 
     binding.browseButton.setOnClickListener(view -> requestPermissionsIfNecessary());
-
     binding.renameButton.setOnClickListener(view -> startRenaming());
   }
 
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
       if (!Environment.isExternalStorageManager()) {
         Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-            Uri.parse("package:" + getPackageName()));
+          Uri.parse("package:" + getPackageName()));
         storagePermissionLauncher.launch(intent);
       } else {
         openDirectoryPicker();
@@ -72,22 +75,21 @@ public class MainActivity extends AppCompatActivity {
   private final ActivityResultLauncher<Intent> directoryPickerLauncher =
     registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
       if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-        Uri uri = result.getData().getData();
-        binding.directoryEditText.setText(uri.getPath());
+        selectedDirectoryUri = result.getData().getData();
+        binding.directoryEditText.setText(selectedDirectoryUri.toString());
       }
     });
 
   private void startRenaming() {
-    String directoryPath = binding.directoryEditText.getText().toString().trim();
     String baseName = binding.baseNameEditText.getText().toString().trim();
 
-    if (directoryPath.isEmpty() || baseName.isEmpty()) {
+    if (selectedDirectoryUri == null || baseName.isEmpty()) {
       Toast.makeText(this, "Please provide both a directory and a base name.", Toast.LENGTH_SHORT).show();
       return;
     }
 
-    File directory = new File(directoryPath);
-    if (!directory.exists() || !directory.isDirectory()) {
+    DocumentFile directory = DocumentFile.fromTreeUri(this, selectedDirectoryUri);
+    if (directory == null || !directory.isDirectory()) {
       Toast.makeText(this, "Invalid directory selected.", Toast.LENGTH_SHORT).show();
       return;
     }
@@ -95,24 +97,23 @@ public class MainActivity extends AppCompatActivity {
     renameFiles(directory, baseName);
   }
 
-  private void renameFiles(File directory, String baseName) {
-    File[] files = directory.listFiles();
-    if (files != null) {
-      int index = 1;
-      for (File file : files) {
-        if (file.isFile()) {
-          String extension = file.getName().substring(file.getName().lastIndexOf("."));
-          String newFileName = baseName + "-" + index + extension;
-          File newFile = new File(directory, newFileName);
-          boolean renamed = file.renameTo(newFile);
-          if (!renamed) {
-            Toast.makeText(this, "Error renaming file: " + file.getName(), Toast.LENGTH_SHORT).show();
-          }
-          index++;
+  private void renameFiles(DocumentFile directory, String baseName) {
+    DocumentFile[] files = directory.listFiles();
+    int index = 1;
+
+    for (DocumentFile file : files) {
+      if (file.isFile()) {
+        String extension = file.getName().substring(file.getName().lastIndexOf("."));
+        String newFileName = baseName + "-" + index + extension;
+        boolean renamed = file.renameTo(newFileName);
+
+        if (!renamed) {
+          Toast.makeText(this, "Error renaming file: " + file.getName(), Toast.LENGTH_SHORT).show();
         }
+        index++;
       }
-      Toast.makeText(this, "Files renamed successfully!", Toast.LENGTH_LONG).show();
     }
+    Toast.makeText(this, "Files renamed successfully!", Toast.LENGTH_LONG).show();
   }
 
   @Override
