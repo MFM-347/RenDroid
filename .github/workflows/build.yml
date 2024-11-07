@@ -71,20 +71,3 @@ jobs:
           path: >-
             ${{ steps.releaseAab.outputs.aabfile }} ${{
             steps.releaseApk.outputs.apkfile }}
-      - name: Extract version from APK
-        id: extract_version_apk
-        run: >
-          VERSION=$(aapt dump badging ${{ steps.releaseApk.outputs.apkfile }} |
-          grep versionName | sed 's/.*versionName=//;s/\x27//g')
-
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-          echo "Version extracted: $VERSION"
-      - name: Create GitHub Release
-        id: create_release
-        run: >
-          RELEASE_TAG="v${{ env.VERSION }}"
-
-          gh release create $RELEASE_TAG ${{ steps.releaseAab.outputs.aabfile }}
-          ${{ steps.releaseApk.outputs.apkfile }} --title "RenDroid
-          v$RELEASE_TAG"
