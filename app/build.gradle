@@ -2,10 +2,10 @@ plugins {
     id 'com.android.application'
 }
 android {
-    namespace 'dev.mfm.app'
+    namespace 'dev.mfm.renamer'
     compileSdk 33
     defaultConfig {
-        applicationId "dev.mfm.app"
+        applicationId "dev.mfm.renamer"
         minSdk 21
         targetSdk 33
         versionCode 1
@@ -15,17 +15,17 @@ android {
         }
     }
     signingConfigs{
-        debug{
+        release{
             storeFile file("../ks/keystore.jks")
-            storePassword System.getenv("DEBUG_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("DEBUG_KEYSTORE_ALIAS")
-            keyPassword System.getenv("DEBUG_KEY_PASSWORD")
+            storePassword System.getenv("RELEASE_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("RELEASE_KEYSTORE_ALIAS")
+            keyPassword System.getenv("RELEASE_KEY_PASSWORD")
         }
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
-            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -37,7 +37,6 @@ android {
         viewBinding true
     }
 }
-
 dependencies {
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
