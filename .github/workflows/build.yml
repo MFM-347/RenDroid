@@ -2,9 +2,6 @@ name: Android CI
 'on':
   workflow_dispatch:
     inputs:
-      name:
-        description: Release-Build
-        default: Generate release build
       testers:
         type: choice
         description: Select testers
