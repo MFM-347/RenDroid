@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import dev.mfm.app.databinding.ActivityMainBinding;
+import dev.mfm.renamer.databinding.ActivityMainBinding;
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
