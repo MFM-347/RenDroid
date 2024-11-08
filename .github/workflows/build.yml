@@ -56,4 +56,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: release-artifacts
-          path: "${{ steps.releaseAab.outputs.aabfile }} ${ steps.releaseApk.outputs.apkfile }}"
+          path: |
+            ${{ steps.releaseAab.outputs.aabfile }}
+            ${{ steps.releaseApk.outputs.apkfile }}
