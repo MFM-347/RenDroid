@@ -2,6 +2,7 @@ package dev.mfm.renamer;
 
 import com.google.android.material.color.DynamicColors;
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,6 +11,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
@@ -42,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     spannableString.setSpan(new ClickableSpan() {
       @Override
-      public void onClick(View widget) {
+      public void onClick(@NonNull View widget) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/MFM-347/"));
         startActivity(intent);
       }
@@ -118,17 +123,21 @@ public class MainActivity extends AppCompatActivity {
 
   private void renameFiles(DocumentFile directory, String baseName) {
     DocumentFile[] files = directory.listFiles();
+    if (files == null) {
+      Toast.makeText(this, "Failed to retrieve files.", Toast.LENGTH_SHORT).show();
+      return;
+    }
+
     int index = 1;
 
     for (DocumentFile file: files) {
       if (file.isFile()) {
         String extension = file.getName().substring(file.getName().lastIndexOf("."));
         String newFileName = baseName + "-" + index + extension;
-        boolean renamed = file.renameTo(newFileName);
-
-        if (!renamed) {
-          Toast.makeText(this, "Error renaming file: " + file.getName(), Toast.LENGTH_SHORT).show();
-        }
+        Uri fileUri = file.getUri();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DocumentsContract.Document.COLUMN_DISPLAY_NAME, newFileName);
+        getContentResolver().update(fileUri, contentValues, null, null);
         index++;
       }
     }
