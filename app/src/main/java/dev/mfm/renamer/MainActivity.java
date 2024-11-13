@@ -138,7 +138,11 @@ public class MainActivity extends AppCompatActivity {
     int index = 1;
     for (DocumentFile file : files) {
       if (file.isFile()) {
-        String extension = file.getName().substring(file.getName().lastIndexOf("."));
+        String extension = "";
+        String fileName = file.getName();
+        if (fileName != null && fileName.contains(".")) {
+          extension = fileName.substring(fileName.lastIndexOf("."));
+        }
         String newFileName = baseName + "-" + index + extension;
         Uri fileUri = file.getUri();
         ContentValues contentValues = new ContentValues();
