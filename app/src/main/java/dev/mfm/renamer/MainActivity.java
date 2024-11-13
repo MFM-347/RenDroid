@@ -75,45 +75,47 @@ public class MainActivity extends AppCompatActivity {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
       if (!Environment.isExternalStorageManager()) {
         Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-            Uri.parse("package:" + getPackageName()));
+          Uri.parse("package:" + getPackageName()));
         storagePermissionLauncher.launch(intent);
       } else {
         openDirectoryPicker();
       }
     } else {
       if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-          PackageManager.PERMISSION_GRANTED) {
+        PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(this,
-            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
+          new String[] {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+          }, REQUEST_CODE_PERMISSION);
       } else {
         openDirectoryPicker();
       }
     }
   }
 
-  private final ActivityResultLauncher<Intent> storagePermissionLauncher =
-      registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (Environment.isExternalStorageManager()) {
-          openDirectoryPicker();
-        } else {
-          Toast.makeText(this, "Permission required to access storage", Toast.LENGTH_SHORT).show();
-        }
-      });
+  private final ActivityResultLauncher < Intent > storagePermissionLauncher =
+    registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+      if (Environment.isExternalStorageManager()) {
+        openDirectoryPicker();
+      } else {
+        Toast.makeText(this, "Permission required to access storage", Toast.LENGTH_SHORT).show();
+      }
+    });
 
   private void openDirectoryPicker() {
     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
     directoryPickerLauncher.launch(intent);
   }
 
-  private final ActivityResultLauncher<Intent> directoryPickerLauncher =
-      registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-          selectedDirectoryUri = result.getData().getData();
-          binding.directoryEditText.setText(selectedDirectoryUri.toString());
-        } else {
-          Toast.makeText(this, "Directory selection canceled or failed.", Toast.LENGTH_SHORT).show();
-        }
-      });
+  private final ActivityResultLauncher < Intent > directoryPickerLauncher =
+    registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+      if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+        selectedDirectoryUri = result.getData().getData();
+        binding.directoryEditText.setText(selectedDirectoryUri.toString());
+      } else {
+        Toast.makeText(this, "Directory selection canceled or failed.", Toast.LENGTH_SHORT).show();
+      }
+    });
 
   private void startRenaming() {
     String baseName = binding.baseNameEditText.getText().toString().trim();
@@ -138,9 +140,10 @@ public class MainActivity extends AppCompatActivity {
       Toast.makeText(this, "No files to rename.", Toast.LENGTH_SHORT).show();
       return;
     }
+    Arrays.sort(files, (file1, file2) -> Long.compare(file2.lastModified(), file1.lastModified()));
 
     int index = 1;
-    for (DocumentFile file : files) {
+    for (DocumentFile file: files) {
       if (file.isFile()) {
         String extension = file.getName().substring(file.getName().lastIndexOf("."));
         String newFileName = baseName + "-" + index + extension;
@@ -153,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
     }
     Toast.makeText(this, "Files renamed successfully!", Toast.LENGTH_LONG).show();
   }
-
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
