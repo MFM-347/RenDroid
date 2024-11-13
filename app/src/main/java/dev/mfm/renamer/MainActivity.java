@@ -34,6 +34,23 @@ public class MainActivity extends AppCompatActivity {
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
 
+    String text = "Created by MFM-347";
+    SpannableString spannableString = new SpannableString(text);
+
+    int start = text.indexOf("MFM-347");
+    int end = start + "MFM-347".length();
+
+    spannableString.setSpan(new ClickableSpan() {
+      @Override
+      public void onClick(View widget) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/MFM-347/"));
+        startActivity(intent);
+      }
+    }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+    binding.textView.setText(spannableString);
+    binding.textView.setMovementMethod(LinkMovementMethod.getInstance());
+
     binding.browseButton.setOnClickListener(view -> requestPermissionsIfNecessary());
     binding.renameButton.setOnClickListener(view -> startRenaming());
   }
@@ -48,17 +65,19 @@ public class MainActivity extends AppCompatActivity {
         openDirectoryPicker();
       }
     } else {
-      if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) 
-        != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(this, 
-          new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
+      if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+        PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this,
+          new String[] {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+          }, REQUEST_CODE_PERMISSION);
       } else {
         openDirectoryPicker();
       }
     }
   }
 
-  private final ActivityResultLauncher<Intent> storagePermissionLauncher = 
+  private final ActivityResultLauncher < Intent > storagePermissionLauncher =
     registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
       if (Environment.isExternalStorageManager()) {
         openDirectoryPicker();
@@ -72,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     directoryPickerLauncher.launch(intent);
   }
 
-  private final ActivityResultLauncher<Intent> directoryPickerLauncher =
+  private final ActivityResultLauncher < Intent > directoryPickerLauncher =
     registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
       if (result.getResultCode() == RESULT_OK && result.getData() != null) {
         selectedDirectoryUri = result.getData().getData();
@@ -101,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     DocumentFile[] files = directory.listFiles();
     int index = 1;
 
-    for (DocumentFile file : files) {
+    for (DocumentFile file: files) {
       if (file.isFile()) {
         String extension = file.getName().substring(file.getName().lastIndexOf("."));
         String newFileName = baseName + "-" + index + extension;
