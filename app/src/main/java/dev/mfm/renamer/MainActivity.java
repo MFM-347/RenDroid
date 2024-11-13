@@ -21,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.documentfile.provider.DocumentFile;
@@ -41,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
     String text = "Created by MFM-347";
     SpannableString spannableString = new SpannableString(text);
-
     int start = text.indexOf("MFM-347");
     int end = start + "MFM-347".length();
 
@@ -58,51 +58,62 @@ public class MainActivity extends AppCompatActivity {
 
     binding.browseButton.setOnClickListener(view -> requestPermissionsIfNecessary());
     binding.renameButton.setOnClickListener(view -> startRenaming());
+
+    binding.darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+      if (isChecked) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+      } else {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+      }
+    });
+
+    boolean isNightMode = (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
+    binding.darkModeSwitch.setChecked(isNightMode);
   }
 
   private void requestPermissionsIfNecessary() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
       if (!Environment.isExternalStorageManager()) {
         Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-          Uri.parse("package:" + getPackageName()));
+            Uri.parse("package:" + getPackageName()));
         storagePermissionLauncher.launch(intent);
       } else {
         openDirectoryPicker();
       }
     } else {
       if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-        PackageManager.PERMISSION_GRANTED) {
+          PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(this,
-          new String[] {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-          }, REQUEST_CODE_PERMISSION);
+            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
       } else {
         openDirectoryPicker();
       }
     }
   }
 
-  private final ActivityResultLauncher < Intent > storagePermissionLauncher =
-    registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-      if (Environment.isExternalStorageManager()) {
-        openDirectoryPicker();
-      } else {
-        Toast.makeText(this, "Permission required to access storage", Toast.LENGTH_SHORT).show();
-      }
-    });
+  private final ActivityResultLauncher<Intent> storagePermissionLauncher =
+      registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (Environment.isExternalStorageManager()) {
+          openDirectoryPicker();
+        } else {
+          Toast.makeText(this, "Permission required to access storage", Toast.LENGTH_SHORT).show();
+        }
+      });
 
   private void openDirectoryPicker() {
     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
     directoryPickerLauncher.launch(intent);
   }
 
-  private final ActivityResultLauncher < Intent > directoryPickerLauncher =
-    registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-      if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-        selectedDirectoryUri = result.getData().getData();
-        binding.directoryEditText.setText(selectedDirectoryUri.toString());
-      }
-    });
+  private final ActivityResultLauncher<Intent> directoryPickerLauncher =
+      registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+          selectedDirectoryUri = result.getData().getData();
+          binding.directoryEditText.setText(selectedDirectoryUri.toString());
+        } else {
+          Toast.makeText(this, "Directory selection canceled or failed.", Toast.LENGTH_SHORT).show();
+        }
+      });
 
   private void startRenaming() {
     String baseName = binding.baseNameEditText.getText().toString().trim();
@@ -123,14 +134,13 @@ public class MainActivity extends AppCompatActivity {
 
   private void renameFiles(DocumentFile directory, String baseName) {
     DocumentFile[] files = directory.listFiles();
-    if (files == null) {
-      Toast.makeText(this, "Failed to retrieve files.", Toast.LENGTH_SHORT).show();
+    if (files == null || files.length == 0) {
+      Toast.makeText(this, "No files to rename.", Toast.LENGTH_SHORT).show();
       return;
     }
 
     int index = 1;
-
-    for (DocumentFile file: files) {
+    for (DocumentFile file : files) {
       if (file.isFile()) {
         String extension = file.getName().substring(file.getName().lastIndexOf("."));
         String newFileName = baseName + "-" + index + extension;

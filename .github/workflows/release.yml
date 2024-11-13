@@ -1,14 +1,7 @@
 name: Build release-app
 'on':
   workflow_dispatch:
-    inputs:
-      testers:
-        type: choice
-        description: Select testers
-        options:
-          - android
-          - internalTesters
-          - everyone
+  
 jobs:
   build:
     runs-on: ubuntu-latest
