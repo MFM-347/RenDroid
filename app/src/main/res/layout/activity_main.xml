@@ -15,8 +15,8 @@
 
   <com.google.android.material.button.MaterialButton android:layout_height="wrap_content" android:layout_width="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/baseNameInputLayout" android:layout_marginTop="24dp" style="@style/Widget.Material3.Button.ElevatedButton.Icon" android:id="@+id/renameButton" android:text="Rename Files" app:icon="@drawable/edit" app:iconGravity="textStart" app:iconPadding="8dp" />
 
-  <com.google.android.material.textview.MaterialTextView android:id="@+id/textView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Created by MFM-347" android:textSize="16sp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent" android:layout_marginBottom="15dp" android:layout_marginStart="15dp" />
+  <com.google.android.material.textview.MaterialTextView android:id="@+id/textView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Created by MFM-347" android:textSize="16sp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent" android:layout_marginBottom="12 5dp" android:layout_marginStart="10dp" />
 
-  <androidx.appcompat.widget.SwitchCompat android:id="@+id/darkModeSwitch" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dark Mode" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" android:layout_marginBottom="15dp" android:layout_marginEnd="15dp" />
+  <androidx.appcompat.widget.SwitchCompat android:id="@+id/darkModeSwitch" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dark Mode" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" android:layout_marginBottom="12.5dp" android:layout_marginEnd="10dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
