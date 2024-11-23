@@ -1,20 +1,25 @@
 name: Build release-app
+
 'on':
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checking out branch
         uses: actions/checkout@v3
+
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
+
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2.0.10
+
       - name: Decode Keystore
         env:
           ENCODED_STRING: '${{ secrets.KEYSTORE_BASE_64 }}'
@@ -25,48 +30,54 @@ jobs:
           mkdir -p app/../ks
           echo $ENCODED_STRING > keystore-b64.txt
           base64 -d keystore-b64.txt > app/../ks/keystore.jks
+
       - name: Make gradlew executable
         run: chmod +x ./gradlew
-      - name: Build Release apk
+
+      - name: Build Release APK
         env:
           RELEASE_KEYSTORE_PASSWORD: '${{ secrets.RELEASE_KEYSTORE_PASSWORD }}'
           RELEASE_KEYSTORE_ALIAS: '${{ secrets.RELEASE_KEYSTORE_ALIAS }}'
           RELEASE_KEY_PASSWORD: '${{ secrets.RELEASE_KEY_PASSWORD }}'
         run: ./gradlew assembleRelease --stacktrace
-      - name: Build Release bundle
+
+      - name: Build Release Bundle
         env:
           RELEASE_KEYSTORE_PASSWORD: '${{ secrets.RELEASE_KEYSTORE_PASSWORD }}'
           RELEASE_KEYSTORE_ALIAS: '${{ secrets.RELEASE_KEYSTORE_ALIAS }}'
           RELEASE_KEY_PASSWORD: '${{ secrets.RELEASE_KEY_PASSWORD }}'
         run: ./gradlew bundleRelease --stacktrace
-      - name: Get release file aab path
+
+      - name: Get release file AAB path
         id: releaseAab
-        run: echo "aabfile=$(find app/build/outputs/bundle/release/*.aab)" >> $GITHUB_OUTPUT
-      - name: Get release file apk path
+        run: echo "aabfile=$(find app/build/outputs/bundle/release/*.aab)" >> $GITHUB_ENV
+
+      - name: Get release file APK path
         id: releaseApk
-        run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+        run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_ENV
+
       - name: Create ZIP file with APK and AAB
-      run: |
-        mkdir -p release-output
-        cp ${{ steps.releaseAab.outputs.aabfile }} release-output/
-        cp ${{ steps.releaseApk.outputs.apkfile }} release-output/
-        zip -r release-output.zip release-output/
-            
+        run: |
+          mkdir -p release-output
+          cp ${{ env.aabfile }} release-output/
+          cp ${{ env.apkfile }} release-output/
+          zip -r release-output.zip release-output/
+
       - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: release-artifacts
           path: |
-            ${{ steps.releaseAab.outputs.aabfile }}
-            ${{ steps.releaseApk.outputs.apkfile }}
+            ${{ env.aabfile }}
+            ${{ env.apkfile }}
             release-output.zip
-            
+
       - name: Create a Draft Release and Upload Assets
-      uses: softprops/action-gh-release@v1
-      with:
-      files: |
-        ${{ steps.releaseAab.outputs.aabfile }}
-        ${{ steps.releaseApk.outputs.apkfile }}
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{ env.aabfile }}
+            ${{ env.apkfile }}
             release-output.zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
