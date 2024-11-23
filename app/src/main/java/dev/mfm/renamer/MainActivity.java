@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
       }
     }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-    binding.textView.setText(spannableString);
-    binding.textView.setMovementMethod(LinkMovementMethod.getInstance());
+    binding.createdByText.setText(spannableString);
+    binding.createdByText.setMovementMethod(LinkMovementMethod.getInstance());
 
     binding.browseButton.setOnClickListener(view -> requestPermissionsIfNecessary());
     binding.renameButton.setOnClickListener(view -> startRenaming());
