@@ -1,23 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="match_parent" android:layout_width="match_parent" android:padding="16dp">
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
-  <com.google.android.material.textfield.TextInputLayout android:layout_height="wrap_content" android:layout_width="0dp" android:hint="Directory Path" app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" android:id="@+id/directoryInputLayout">
+    <ImageView
+        android:id="@+id/appIcon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:contentDescription="@string/app_name"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.google.android.material.textfield.TextInputEditText android:layout_height="wrap_content" android:layout_width="match_parent" android:focusable="false" android:clickable="true" android:id="@+id/directoryEditText" />
-  </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/appName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/appIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-  <com.google.android.material.button.MaterialButton android:layout_height="wrap_content" android:layout_width="wrap_content" app:layout_constraintTop_toBottomOf="@+id/directoryInputLayout" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp" app:backgroundTint="?attr/colorSecondary" app:iconTint="?attr/colorOnSecondary" android:textColor="?attr/colorOnSecondary" style="@style/Widget.Material3.Button.ElevatedButton.Icon" android:id="@+id/browseButton" android:text="Browse" app:icon="@drawable/folder_open" app:iconGravity="textStart" app:iconPadding="8dp" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/directoryInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Directory Path"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@+id/appName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-  <com.google.android.material.textfield.TextInputLayout android:layout_height="wrap_content" android:layout_width="0dp" android:hint="Base Name" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/browseButton" android:layout_marginTop="16dp" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" android:id="@+id/baseNameInputLayout">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/directoryEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:clickable="true" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputEditText android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/baseNameEditText" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/browseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Browse"
+        android:textColor="?attr/colorOnSecondary"
+        app:backgroundTint="?attr/colorSecondary"
+        app:icon="@drawable/folder_open"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="?attr/colorOnSecondary"
+        app:layout_constraintTop_toBottomOf="@+id/directoryInputLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/Widget.Material3.Button.ElevatedButton.Icon" />
 
-  </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/baseNameInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Base Name"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@+id/browseButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-  <com.google.android.material.button.MaterialButton android:layout_height="wrap_content" android:layout_width="wrap_content" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/baseNameInputLayout" android:layout_marginTop="24dp" style="@style/Widget.Material3.Button.ElevatedButton.Icon" android:id="@+id/renameButton" android:text="Rename Files" app:icon="@drawable/edit" app:iconGravity="textStart" app:iconPadding="8dp" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/baseNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-  <com.google.android.material.textview.MaterialTextView android:id="@+id/textView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Created by MFM-347" android:textSize="16sp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent" android:layout_marginBottom="10dp" android:layout_marginStart="10dp" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/renameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Rename Files"
+        app:icon="@drawable/edit"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/baseNameInputLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/Widget.Material3.Button.ElevatedButton.Icon" />
 
-  <androidx.appcompat.widget.SwitchCompat android:id="@+id/darkModeSwitch" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Night Mode" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" android:layout_marginBottom="10dp" android:layout_marginEnd="10dp" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="10dp"
+        android:text="Created by MFM-347"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/darkModeSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="Night"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
