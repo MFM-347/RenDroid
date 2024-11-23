@@ -45,6 +45,13 @@ jobs:
       - name: Get release file apk path
         id: releaseApk
         run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+      - name: Create ZIP file with APK and AAB
+      run: |
+        mkdir -p release-output
+        cp ${{ steps.releaseAab.outputs.aabfile }} release-output/
+        cp ${{ steps.releaseApk.outputs.apkfile }} release-output/
+        zip -r release-output.zip release-output/
+            
       - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -52,3 +59,14 @@ jobs:
           path: |
             ${{ steps.releaseAab.outputs.aabfile }}
             ${{ steps.releaseApk.outputs.apkfile }}
+            release-output.zip
+            
+      - name: Create a Draft Release and Upload Assets
+      uses: softprops/action-gh-release@v1
+      with:
+      files: |
+        ${{ steps.releaseAab.outputs.aabfile }}
+        ${{ steps.releaseApk.outputs.apkfile }}
+            release-output.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
