@@ -34,6 +34,8 @@
         android:layout_height="wrap_content"
         android:hint="Directory Path"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:endIconMode="clear_text"
+        app:helperText="Select a directory using the Browse button."
         app:layout_constraintTop_toBottomOf="@+id/appName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -52,16 +54,23 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Browse"
-        android:textColor="?attr/colorOnSecondary"
-        app:backgroundTint="?attr/colorSecondary"
+        android:contentDescription="Browse directory"
         app:icon="@drawable/folder_open"
         app:iconGravity="textStart"
         app:iconPadding="8dp"
-        app:iconTint="?attr/colorOnSecondary"
         app:layout_constraintTop_toBottomOf="@+id/directoryInputLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/Widget.Material3.Button.ElevatedButton.Icon" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="?attr/colorOnBackground"
+        app:layout_constraintTop_toBottomOf="@+id/browseButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/baseNameInputLayout"
@@ -70,6 +79,7 @@
         android:layout_marginTop="16dp"
         android:hint="Base Name"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:endIconMode="clear_text"
         app:layout_constraintTop_toBottomOf="@+id/browseButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -89,29 +99,29 @@
         app:icon="@drawable/edit"
         app:iconGravity="textStart"
         app:iconPadding="8dp"
+        android:enabled="false"
         app:layout_constraintTop_toBottomOf="@+id/baseNameInputLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         style="@style/Widget.Material3.Button.ElevatedButton.Icon" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/textView"
+        android:id="@+id/createdByText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:layout_marginStart="10dp"
         android:text="Created by MFM-347"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/darkModeSwitch" />
 
-    <androidx.appcompat.widget.SwitchCompat
+    <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/darkModeSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:layout_marginEnd="10dp"
-        android:text="Night"
+        android:text="Dark Mode"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
