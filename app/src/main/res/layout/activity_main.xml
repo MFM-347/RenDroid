@@ -96,26 +96,25 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     style="@style/Widget.Material3.Button.ElevatedButton.Icon" />
-
-  <com.google.android.material.textview.MaterialTextView
+    
+<com.google.android.material.textview.MaterialTextView
     android:id="@+id/createdByText"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="7.5dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginBottom="10dp"
     android:text="Created by MFM-347"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toStartOf="@+id/darkModeSwitch"
-    app:layout_constraintHorizontal_chainStyle="packed" />
+    app:layout_constraintStart_toStartOf="parent" />
 
-  <com.google.android.material.materialswitch.MaterialSwitch
+<com.google.android.material.materialswitch.MaterialSwitch
     android:id="@+id/darkModeSwitch"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="7.5dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginBottom="10dp"
     android:text="Dark"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toEndOf="@+id/createdByText"
     app:layout_constraintEnd_toEndOf="parent" />
-
+    
 </androidx.constraintlayout.widget.ConstraintLayout>
