@@ -11,13 +11,11 @@
     android:id="@+id/darkModeSwitch"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:layout_marginEnd="16dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginEnd="12dp"
     android:text="Dark"
     app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    android:layout_marginEnd="5dp"
-    android:layout_marginTop="5dp" />
+    app:layout_constraintEnd_toEndOf="parent" />
     
   <ImageView
     android:id="@+id/appIcon"
