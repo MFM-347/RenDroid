@@ -71,13 +71,3 @@ jobs:
             ${{ env.aabfile }}
             ${{ env.apkfile }}
             release-output.zip
-
-      - name: Create a Draft Release and Upload Assets
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            ${{ env.aabfile }}
-            ${{ env.apkfile }}
-            release-output.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
