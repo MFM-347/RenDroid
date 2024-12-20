@@ -1,0 +1,24 @@
+<menu>
+  
+  <item
+    android:id="@+id/code"
+    android:icon="@drawable/ic_code"
+    android:title="Source Code"
+    android:contentDescription="App Source Code"
+    app:showAsAction="withText"/>
+
+  <item
+    android:id="@+id/mail"
+    android:icon="@drawable/ic_mail"
+    android:title="Feedback"
+    android:contentDescription="@string/App Feedback"
+    app:showAsAction="withText"/>
+
+  <item
+    android:id="@+id/darkMode"
+    android:icon="@drawable/ic_dark_mode"
+    android:title="darkMode"
+    android:contentDescription="Toggle Dark Mode"
+    app:showAsAction="withText"/>
+
+</menu>

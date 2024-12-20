@@ -2,20 +2,15 @@ package dev.mfm.renamer;
 
 import com.google.android.material.color.DynamicColors;
 import android.Manifest;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.Settings;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -29,129 +24,125 @@ import dev.mfm.renamer.databinding.ActivityMainBinding;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
-
   private ActivityMainBinding binding;
   private static final int REQUEST_CODE_PERMISSION = 100;
   private Uri selectedDirectoryUri;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     DynamicColors.applyToActivityIfAvailable(this);
     super.onCreate(savedInstanceState);
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
-
-    String text = "Created by MFM-347";
-    SpannableString spannableString = new SpannableString(text);
-    int start = text.indexOf("MFM-347");
-    int end = start + "MFM-347".length();
-
-    spannableString.setSpan(new ClickableSpan() {
-      @Override
-      public void onClick(@NonNull View widget) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/MFM-347/"));
-        startActivity(intent);
-      }
-    }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-    binding.createdByText.setText(spannableString);
-    binding.createdByText.setMovementMethod(LinkMovementMethod.getInstance());
-
     binding.browseButton.setOnClickListener(view -> requestPermissionsIfNecessary());
     binding.renameButton.setOnClickListener(view -> startRenaming());
-
-    binding.darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-      AppCompatDelegate.setDefaultNightMode(isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-    });
-
-    boolean isNightMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES;
-    binding.darkModeSwitch.setChecked(isNightMode);
   }
-
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.bottom_app_bar, menu);
+    return true;
+  }
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+    case R.id.code:
+      openSourceCode();
+      return true;
+    case R.id.mail:
+      sendFeedback();
+      return true;
+    case R.id.darkMode:
+      toggleDarkMode(item);
+      return true;
+    default:
+      return super.onOptionsItemSelected(item);
+    }
+  }
+  private void openSourceCode() {
+    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/MFM-347/RenDroid"));
+    startActivity(intent);
+  }
+  private void sendFeedback() {
+    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "madnifm347@outlook.com", null));
+    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "App Feedback");
+    startActivity(Intent.createChooser(emailIntent, "Send feedback"));
+  }
+  private void toggleDarkMode(MenuItem item) {
+    boolean isChecked = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES;
+    AppCompatDelegate.setDefaultNightMode(isChecked ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+    item.setChecked(!isChecked);
+  }
   private void requestPermissionsIfNecessary() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
       if (!Environment.isExternalStorageManager()) {
         Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-            Uri.parse("package:" + getPackageName()));
+          Uri.parse("package:" + getPackageName()));
         storagePermissionLauncher.launch(intent);
       } else {
         openDirectoryPicker();
       }
     } else {
-      if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-          != PackageManager.PERMISSION_GRANTED) {
+      if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+        PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(this,
-            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
+          new String[] {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+          }, REQUEST_CODE_PERMISSION);
       } else {
         openDirectoryPicker();
       }
     }
   }
-
-  private final ActivityResultLauncher<Intent> storagePermissionLauncher =
-      registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (Environment.isExternalStorageManager()) {
-          openDirectoryPicker();
-        } else {
-          Toast.makeText(this, "Permission required to access storage", Toast.LENGTH_SHORT).show();
-        }
-      });
-
+  private final ActivityResultLauncher < Intent > storagePermissionLauncher =
+    registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+      if (Environment.isExternalStorageManager()) {
+        openDirectoryPicker();
+      } else {
+        Toast.makeText(this, "Permission required to access storage", Toast.LENGTH_SHORT).show();
+      }
+    });
   private void openDirectoryPicker() {
     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
     directoryPickerLauncher.launch(intent);
   }
-
-  private final ActivityResultLauncher<Intent> directoryPickerLauncher =
-      registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-          selectedDirectoryUri = result.getData().getData();
-          binding.directoryEditText.setText(selectedDirectoryUri.toString());
-        } else {
-          Toast.makeText(this, "Directory selection canceled or failed.", Toast.LENGTH_SHORT).show();
-        }
-      });
-
+  private final ActivityResultLauncher < Intent > directoryPickerLauncher =
+    registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+      if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+        selectedDirectoryUri = result.getData().getData();
+        binding.directoryEditText.setText(selectedDirectoryUri.toString());
+      } else {
+        Toast.makeText(this, "Directory selection canceled or failed.", Toast.LENGTH_SHORT).show();
+      }
+    });
   private void startRenaming() {
     String baseName = binding.baseNameEditText.getText().toString().trim();
-
     if (selectedDirectoryUri == null || baseName.isEmpty()) {
       Toast.makeText(this, "Please provide both a directory and a base name.", Toast.LENGTH_SHORT).show();
       return;
     }
-
     DocumentFile directory = DocumentFile.fromTreeUri(this, selectedDirectoryUri);
     if (directory == null || !directory.isDirectory()) {
       Toast.makeText(this, "Invalid directory selected.", Toast.LENGTH_SHORT).show();
       return;
     }
-
     renameFiles(directory, baseName);
   }
-
   private void renameFiles(DocumentFile directory, String baseName) {
     DocumentFile[] files = directory.listFiles();
     int index = 1;
-
     if (files == null || files.length == 0) {
       Toast.makeText(this, "No files to rename.", Toast.LENGTH_SHORT).show();
       return;
     }
-
     Arrays.sort(files, (file1, file2) -> Long.compare(file2.lastModified(), file1.lastModified()));
-
-    for (DocumentFile file : files) {
+    for (DocumentFile file: files) {
       if (file.isFile()) {
         String extension = "";
         String fileName = file.getName();
-
         if (fileName != null && fileName.lastIndexOf(".") != -1) {
           extension = fileName.substring(fileName.lastIndexOf("."));
         }
-
         String newFileName = baseName + "-" + index + extension;
         boolean renamed = file.renameTo(newFileName);
-
         if (!renamed) {
           Toast.makeText(this, "Error renaming file: " + file.getName(), Toast.LENGTH_SHORT).show();
         } else {
@@ -159,10 +150,8 @@ public class MainActivity extends AppCompatActivity {
         }
       }
     }
-
     Toast.makeText(this, "Files renamed successfully!", Toast.LENGTH_LONG).show();
   }
-
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);

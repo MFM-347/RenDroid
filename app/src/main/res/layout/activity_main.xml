@@ -66,7 +66,7 @@
     android:layout_marginTop="8dp"
     android:text="Browse"
     android:contentDescription="Browse directory"
-    app:icon="@drawable/folder_open"
+    app:icon="@drawable/ic_folder_open"
     app:iconGravity="textStart"
     app:iconPadding="8dp"
     app:layout_constraintTop_toBottomOf="@+id/directoryInputLayout"
@@ -98,7 +98,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="24dp"
     android:text="Rename Files"
-    app:icon="@drawable/edit"
+    app:icon="@drawable/ic_edit"
     app:iconGravity="textStart"
     app:iconPadding="8dp"
     android:enabled="false"
@@ -107,14 +107,13 @@
     app:layout_constraintEnd_toEndOf="parent"
     style="@style/Widget.Material3.Button.ElevatedButton.Icon" />
     
-  <com.google.android.material.textview.MaterialTextView
-    android:id="@+id/createdByText"
-    android:layout_width="wrap_content"
+  <com.google.android.material.bottomappbar.BottomAppBar
+    android:id="@+id/bottomAppBar"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="5dp"
-    android:layout_marginBottom="7.5dp"
-    android:text="Created by MFM-347"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent" />
-
+    android:layout_gravity="bottom"
+    style="@style/Widget.Material3.BottomAppBar"
+    app:menu="@menu/bottom_app_bar"
+  />
+  
 </androidx.constraintlayout.widget.ConstraintLayout>
