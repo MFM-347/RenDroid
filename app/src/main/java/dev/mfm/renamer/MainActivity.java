@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
+
     binding.browseButton.setOnClickListener(view -> requestPermissionsIfNecessary());
     binding.renameButton.setOnClickListener(view -> startRenaming());
   }
@@ -43,19 +44,18 @@ public class MainActivity extends AppCompatActivity {
   }
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-    case R.id.code:
+    int id = item.getItemId();
+    if (id == R.id.code) {
       openSourceCode();
       return true;
-    case R.id.mail:
+    } else if (id == R.id.mail) {
       sendFeedback();
       return true;
-    case R.id.darkMode:
+    } else if (id == R.id.darkMode) {
       toggleDarkMode(item);
       return true;
-    default:
-      return super.onOptionsItemSelected(item);
     }
+    return super.onOptionsItemSelected(item);
   }
   private void openSourceCode() {
     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/MFM-347/RenDroid"));
@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Directory selection canceled or failed.", Toast.LENGTH_SHORT).show();
       }
     });
+
   private void startRenaming() {
     String baseName = binding.baseNameEditText.getText().toString().trim();
     if (selectedDirectoryUri == null || baseName.isEmpty()) {
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
     }
     renameFiles(directory, baseName);
   }
+
   private void renameFiles(DocumentFile directory, String baseName) {
     DocumentFile[] files = directory.listFiles();
     int index = 1;
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
     }
     Toast.makeText(this, "Files renamed successfully!", Toast.LENGTH_LONG).show();
   }
+
   @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
